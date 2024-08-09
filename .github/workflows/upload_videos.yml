@@ -1,0 +1,30 @@
+name: Video Upload Scheduler
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Har 10 minute me run hota hai
+
+jobs:
+  upload-videos:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: |
+          pip install pandas requests
+
+      - name: Download and Run Video Upload Script
+        env:
+          FACEBOOK_ACCESS_TOKEN: ${{ secrets.FACEBOOK_ACCESS_TOKEN }}
+          PAGE_ID: ${{ secrets.PAGE_ID }}
+        run: |
+          curl -o upload_videos.py https://raw.githubusercontent.com/poij10020/New/main/upload_videos.py
+          python upload_videos.py
